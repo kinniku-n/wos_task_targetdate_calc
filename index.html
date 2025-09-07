@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>【最終FIX版 v4】タスク開始日時計算ツール</title>
+    <title>タスク開始日時計算ツール</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -29,7 +29,6 @@
         height: 100%;
         margin: 0;
         padding: 0;
-        overflow: hidden;
         font-family: var(--font-family);
         background-color: var(--background-color);
       }
@@ -43,12 +42,14 @@
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         display: flex;
         flex-direction: column;
-        overflow: hidden;
       }
 
       .content-wrapper {
         flex-grow: 1;
         min-height: 0;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
       }
 
       .page {
@@ -250,13 +251,12 @@
         border-collapse: collapse;
       }
 
-      /* ▼▼▼ 修正箇所：テーブルの余白とフォントサイズを微調整 ▼▼▼ */
       .history-table td {
-        padding: 10px 3px; /* 左右の余白をさらに詰める */
+        padding: 10px 3px;
         border-bottom: 1px solid var(--border-color);
         text-align: right;
-        font-size: 0.82em; /* フォントを僅かに小さく */
-        white-space: nowrap; /* すべてのセルで改行を禁止 */
+        font-size: 0.82em;
+        white-space: nowrap;
       }
       .history-table th {
         padding: 10px 3px;
@@ -272,7 +272,6 @@
       .history-table td:first-child {
         text-align: center;
       }
-      /* ▲▲▲ 修正箇所 ▲▲▲ */
 
       @keyframes highlight-and-fade {
         0% {
@@ -284,6 +283,16 @@
       }
       .history-table tr.new-entry {
         animation: highlight-and-fade 1.5s ease-out forwards;
+      }
+
+      .footer {
+        text-align: center;
+        font-size: 0.8em;
+        color: #888;
+        padding: 10px;
+        border-top: 1px solid var(--border-color);
+        background-color: var(--surface-color);
+        flex-shrink: 0;
       }
     </style>
   </head>
@@ -341,6 +350,7 @@
               ここに開始日時が表示されます
             </div>
           </section>
+
           <section class="history-section">
             <header class="history-header">
               <h3>直近の履歴</h3>
@@ -390,6 +400,8 @@
           </div>
         </section>
       </div>
+
+      <footer class="footer">作成者 #3275 きんにくん</footer>
     </div>
 
     <script>
@@ -551,16 +563,13 @@
         const formatDuration = (d, h, m) =>
           `${d}d ${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
 
-        // ▼▼▼ 修正箇所：日付フォーマットから曜日を削除 ▼▼▼
         const formatShortDate = (date) => {
-          const mo = String(date.getMonth() + 1).padStart(2, "0");
-          const d = String(date.getDate()).padStart(2, "0");
-          const h = String(date.getHours()).padStart(2, "0");
-          const m = String(date.getMinutes()).padStart(2, "0");
-          return `${mo}/${d} ${h}:${m}`; // (曜) を削除
+          const mm = String(date.getMonth() + 1).padStart(2, "0");
+          const dd = String(date.getDate()).padStart(2, "0");
+          const hh = String(date.getHours()).padStart(2, "0");
+          const min = String(date.getMinutes()).padStart(2, "0");
+          return `${mm}/${dd} ${hh}:${min}`;
         };
-        // ▲▲▲ 修正箇所 ▲▲▲
-
         UIElements.buttons.calc.addEventListener("click", handleCalculation);
         UIElements.buttons.reset.addEventListener("click", UI.resetForm);
         UIElements.buttons.showHistory.addEventListener("click", () =>
@@ -573,9 +582,9 @@
           "click",
           handleClearHistory
         );
-        UIElements.buttons.typeButtons.forEach((button) =>
-          button.addEventListener("click", () => UI.updateTypeSelection(button))
-        );
+        UIElements.buttons.typeButtons.forEach((btn) => {
+          btn.addEventListener("click", () => UI.updateTypeSelection(btn));
+        });
         UI.renderHistory();
       });
     </script>
